@@ -24,7 +24,7 @@ router.post("/connexion", async (req, res) => {
     });
 
     if (account === null) {
-      throw Error("email doesn`t exist");
+      throw Error("email doesn't exist");
     }
 
     // const salt = uid2(16);
