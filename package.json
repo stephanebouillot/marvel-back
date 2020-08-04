@@ -1,0 +1,31 @@
+{
+  "name": "marvel-back",
+  "version": "1.0.0",
+  "description": "Backend for marvel project",
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "cors": "^2.8.5",
+    "crypto-js": "^4.0.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-formidable": "^1.2.0",
+    "nodemon": "^2.0.4",
+    "mongoose": "^5.9.26",
+    "uid2": "^0.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stephanebouillot/marvel-back.git"
+  },
+  "author": "Stephane Bouillot",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stephanebouillot/marvel-back/issues"
+  },
+  "homepage": "https://github.com/stephanebouillot/marvel-back#readme"
+}
