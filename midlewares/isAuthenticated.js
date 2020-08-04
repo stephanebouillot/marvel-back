@@ -16,7 +16,9 @@ const isAuthenticated = async (req, res, next) => {
     }
   } else {
     return res.status(401).json({
-      error: "Unauthorized",
+      error: {
+        message: "Unauthorized",
+      },
     });
   }
 };
