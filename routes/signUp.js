@@ -15,6 +15,11 @@ router.post("/signUp", async (req, res) => {
     const signUpname = req.fields.username;
 
     const signUppassword = req.fields.password;
+    const signUpconfirmpassword = req.fields.confirmpassword;
+
+    if (signUpconfirmpassword !== signUppassword) {
+      throw Error("passwords don't match");
+    }
 
     if (signUpmail === undefined || signUpmail === null) {
       throw Error("please enter an email");

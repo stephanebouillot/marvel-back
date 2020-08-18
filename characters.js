@@ -6,6 +6,7 @@ const encHex = require("crypto-js/enc-hex");
 const axios = require("axios");
 const { env } = require("process");
 
+// / creation d une route get pour recuperer les characters sur la bdd marvel
 router.get("/", async (req, res) => {
   try {
     const timestamp = Date.now();
@@ -13,6 +14,7 @@ router.get("/", async (req, res) => {
     const response = await axios.get(
       "https://gateway.marvel.com:443/v1/public/characters",
       {
+        // parametre de connexion a la bdd de marvel
         params: {
           apikey: process.env.API_KEY,
           ts: timestamp,
@@ -21,12 +23,15 @@ router.get("/", async (req, res) => {
           ).toString(encHex),
           limit: req.query.limit,
           offset: req.query.offset,
+
+          // affichage des resutats par order alphabetique
           orderBy: "name",
+          // props search gerer par la bdd marvel
           nameStartsWith: req.query.search,
         },
       }
     );
-
+    // boucle sur les resultats envoyes par la bdd pour les characters
     const characters = response.data.data.results.map((character) => ({
       id: character.id,
       name: character.name,
@@ -35,6 +40,7 @@ router.get("/", async (req, res) => {
     }));
 
     res.json({
+      // nombre de resultat envoyes par la bdd marvel
       count: response.data.data.total,
       characters: characters,
     });

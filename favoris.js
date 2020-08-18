@@ -5,30 +5,40 @@ const encHex = require("crypto-js/enc-hex");
 const axios = require("axios");
 const { env } = require("process");
 
+// variable de verification de l enregistrement du user
 const isAuthenticated = require("./midlewares/isAuthenticated");
 const { compileFunction } = require("vm");
 
+// declaration de la route post qui va ajouter un favori en bdd
 router.post("/", isAuthenticated, async (req, res) => {
+  // variables precisant le type et l id emvoyes dans les champs concernes du front
   const type = req.fields.type;
   const id = req.fields.id;
 
   try {
+    // verification des types et envoi des messages d erreurs
     if (type !== "character" && type !== "comic") {
       throw Error("Wrong type");
     }
-
+    // variable de temps pour l'authentification
     const timestamp = Date.now();
-
+    // si le type est charactere
     if (type === "character") {
       if (
+        // si le favoris existe deja on envoie message erreur
+        // on envoie une requete dans les favoris characters en cherchant le caractere et si l id du chacracter demade
+        // existe deja envoi message erreur
         req.user.favoris.characters.find((character) => character.id === id) !==
         undefined
       ) {
         throw Error("Character already added");
       }
+
+      // envoi d un get dans la base donnee marvel demandant le characetere en fonction de l id du charactere
       const response = await axios.get(
         `https://gateway.marvel.com:443/v1/public/characters/${id}`,
         {
+          // authentification a la base de donnee
           params: {
             apikey: process.env.API_KEY,
             ts: timestamp,
@@ -38,23 +48,26 @@ router.post("/", isAuthenticated, async (req, res) => {
           },
         }
       );
-
+      // variable des resultats de la recherche
       const character = response.data.data.results[0];
-
+      // on envoie dans la base de donnees le resultat de la recherche
       req.user.favoris.characters.push({
         id: id,
         name: character.name,
         description: character.description,
         thumbnail: character.thumbnail,
       });
-
+      // et enregistrement de l utilisateur apres ajout du favori
       await req.user.save();
+      // si le type est comic
     } else if (type === "comic") {
       if (
         req.user.favoris.comics.find((comic) => comic.id === id) !== undefined
       ) {
         throw Error("Comic already added");
       }
+
+      // idem que requete pour characteres
       const response = await axios.get(
         `https://gateway.marvel.com:443/v1/public/comics/${id}`,
         {
@@ -91,6 +104,7 @@ router.post("/", isAuthenticated, async (req, res) => {
   }
 });
 
+// idem requete que les deux precedentes mais on delete plutot que enregistre dans la bdd
 router.delete("/", isAuthenticated, async (req, res) => {
   const type = req.fields.type;
   const id = req.fields.id;
